@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss xmlns="http://www.jboss.com/xml/ns/javaee"
+       xmlns:jee="http://java.sun.com/xml/ns/javaee"
+       xmlns:ci ="urn:container-interceptors:1.0">
+
+    <jee:assembly-descriptor>
+        <ci:container-interceptors>
+            <!-- Class level container-interceptor which will be applicable for all business method
+             invocations on the bean -->            
+            <jee:interceptor-binding>
+                <ejb-name>MemberRegistration</ejb-name>
+                <interceptor-class>org.jboss.as.quickstarts.kitchensink_ear.service.DemoInterceptor</interceptor-class>
+            </jee:interceptor-binding>
+        </ci:container-interceptors>
+    </jee:assembly-descriptor>
+</jboss>

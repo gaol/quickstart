@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2015, Red Hat, Inc. and/or its affiliates, and individual
+ * Copyright 2013, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
  *
@@ -16,30 +16,21 @@
  */
 package org.jboss.as.quickstarts.kitchensink_ear.service;
 
-import java.util.logging.Logger;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.InvocationContext;
 
-import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
+import org.jboss.logging.Logger;
 
-import org.jboss.as.quickstarts.kitchensink_ear.data.MemberRepository;
-import org.jboss.as.quickstarts.kitchensink_ear.model.Member;
+public class Demo2Interceptor {
 
-// The @Stateless annotation eliminates the need for manual transaction demarcation
-@Stateless
-public class MemberRegistration {
+    private static final Logger logger = Logger.getLogger(Demo2Interceptor.class);
 
-    @Inject
-    private Logger log;
+    static final String SECURITY_TOKEN_KEY = Demo2Interceptor.class.getName() + ".SecurityToken";
 
-    @Inject MemberRepository memberReg;
-
-    @Inject
-    private Event<Member> memberEventSrc;
-
-    public void register(Member member) throws Exception {
-        log.info("Registering " + member.getName());
-        memberReg.addMember(member);
-        memberEventSrc.fire(member);
+    @AroundInvoke
+    public Object aroundInvoke(final InvocationContext invocationContext) throws Exception {
+        logger.warn("Interceptored in overlay !!!");
+        return invocationContext.proceed();
     }
+
 }

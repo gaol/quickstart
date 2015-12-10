@@ -60,6 +60,7 @@
     <modules>
         <module>ejb</module>
         <module>web</module>
+        <module>inter</module>
         <module>ear</module>
     </modules>
 
@@ -75,6 +76,12 @@
                 <type>ejb</type>
             </dependency>
 
+            <dependency>
+                <groupId>org.wildfly.quickstarts</groupId>
+                <artifactId>wildfly-kitchensink-ear-inter</artifactId>
+                <version>${project.version}</version>
+                <type>jar</type>
+            </dependency>
             <!-- Define the version of the WAR so that we don't need to repeat
                 ourselves in every module -->
             <dependency>

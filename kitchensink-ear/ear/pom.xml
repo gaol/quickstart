@@ -49,6 +49,11 @@
             <artifactId>wildfly-kitchensink-ear-ejb</artifactId>
             <type>ejb</type>
         </dependency>
+        <dependency>
+            <groupId>org.wildfly.quickstarts</groupId>
+            <artifactId>wildfly-kitchensink-ear-inter</artifactId>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <build>
