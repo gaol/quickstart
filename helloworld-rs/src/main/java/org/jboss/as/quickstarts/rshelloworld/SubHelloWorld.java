@@ -19,7 +19,6 @@ package org.jboss.as.quickstarts.rshelloworld;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -32,19 +31,11 @@ import javax.ws.rs.Consumes;
  * @author gbrey@redhat.com
  *
  */
-
-@Path("/hello")
-@Produces({ "application/json", "text/plain" })
-public class HelloWorld {
+public class SubHelloWorld {
 
     @GET
     public String hello() {
-        return "{\"result\":\"Hello World\"}";
-    }
-
-    @Path("sub")
-    public SubHelloWorld subMessage() {
-        return new SubHelloWorld();
+        return "Hello in Sub";
     }
 
 }
