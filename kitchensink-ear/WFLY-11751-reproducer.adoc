@@ -1,0 +1,45 @@
+== WFLY-11751-reproducer
+
+
+=== How to reproduce:
+
+* Run `mvn clean install` to build the ear at the `ear/target/` directory
+* Deploy the ear: `ear/target/kitchensink-ear.ear` to the WildFly server
+* Open WildFly CLI, and run the following:
+
+
+* For subdeployment: `kitchensink-ear-web.war`
+
+This war has REST activator with prefix: `/rest`
+
+> /deployment=kitchensink-ear.ear/subdeployment=kitchensink-ear-web.war/subsystem=jaxrs/rest-resource=*:query()
+
+You will seee REST endpoints information displayed in the console, please try the following URL to verify the REST Endpoints:
+
+> `curl -i http://localhost:8080/kitchensink-ear-web/rest/members`
+
+> `curl -i http://localhost:8080/kitchensink-ear-web/rest/members2`
+
+
+* For subdeployment: `kitchensink-ear-web2.war`
+
+This war has REST activator with prefix: `/rest2`
+
+> /deployment=kitchensink-ear.ear/subdeployment=kitchensink-ear-web2.war/subsystem=jaxrs/rest-resource=*:query()
+
+You will seee REST endpoints information displayed in the console, please try the following URL to verify the REST Endpoints:
+
+> `curl -i http://localhost:8080/kitchensink-ear-web2/rest2/members`
+
+> `curl -i http://localhost:8080/kitchensink-ear-web2/rest2/members2`
+
+
+
+* For subdeployment: `kitchensink-ear-web3.war`
+
+This war does not have REST activator at all, so there are no way to visit REST endpoints from this deployment.
+
+> /deployment=kitchensink-ear.ear/subdeployment=kitchensink-ear-web3.war/subsystem=jaxrs/rest-resource=*:query()
+
+You will see empty in the result.
+

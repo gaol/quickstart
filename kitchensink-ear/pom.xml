@@ -44,6 +44,8 @@
     <modules>
         <module>ejb</module>
         <module>web</module>
+        <module>web2</module>
+        <module>web3</module>
         <module>ear</module>
     </modules>
 
@@ -64,6 +66,20 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>kitchensink-ear-web</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>kitchensink-ear-web2</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>kitchensink-ear-web3</artifactId>
                 <version>${project.version}</version>
                 <type>war</type>
                 <scope>compile</scope>

@@ -49,6 +49,16 @@
             <artifactId>kitchensink-ear-web</artifactId>
             <type>war</type>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>kitchensink-ear-web2</artifactId>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>kitchensink-ear-web3</artifactId>
+            <type>war</type>
+        </dependency>
     </dependencies>
 
     <build>
