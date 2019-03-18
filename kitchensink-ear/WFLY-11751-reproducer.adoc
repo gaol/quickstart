@@ -37,9 +37,9 @@ You will seee REST endpoints information displayed in the console, please try th
 
 * For subdeployment: `kitchensink-ear-web3.war`
 
-This war does not have REST activator at all, so there are no way to visit REST endpoints from this deployment.
+UPDATE:
+
+This war does not have REST activator, but there is a `/rest0` one defined in ejb module, so you will see  REST endpoints displayed too from this sub deployment:
 
 > /deployment=kitchensink-ear.ear/subdeployment=kitchensink-ear-web3.war/subsystem=jaxrs/rest-resource=*:query()
-
-You will see empty in the result.
 
