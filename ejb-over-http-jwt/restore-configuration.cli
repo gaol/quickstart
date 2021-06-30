@@ -1,0 +1,16 @@
+
+batch
+
+/subsystem=undertow/server=default-server/host=default-host/setting=http-invoker:undefine-attribute(name=http-authentication-factory)
+
+/subsystem=elytron/http-authentication-factory=jwt-http-authentication:remove()
+
+/subsystem=elytron/security-domain=jwt-domain:remove()
+
+/subsystem=elytron/token-realm=jwt-realm:remove()
+
+/subsystem=elytron/key-store=jwt-key-store:remove()
+
+run-batch
+
+reload
