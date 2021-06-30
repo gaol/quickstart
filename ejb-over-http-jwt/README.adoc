@@ -1,9 +1,9 @@
 include::../shared-doc/attributes.adoc[]
 
-= ejb-remote: Remote EJB Client Example
-:author: Jaikiran Pai, Mike Musgrove
+= ejb-remote: EJB Over HTTP with JWT Authentication Example
+:author: Lin Gao
 :level: Intermediate
-:technologies: EJB, JNDI
+:technologies: EJB, HTTP, JWT
 
 [abstract]
 The `ejb-remote` quickstart uses EJB and JNDI to demonstrate how to access an EJB, deployed to {productName}, from a remote Java client application.
@@ -16,17 +16,18 @@ The `ejb-remote` quickstart uses EJB and JNDI to demonstrate how to access an EJ
 
 == What is it?
 
-The `ejb-remote` quickstart shows how to access an EJB from a remote Java client application. It demonstrates the use of EJB and JNDI in {productNameFull}.
+The `ejb-over-http-jwt` quickstart shows how to access an EJB from a remote Java client application via HTTP transport.
+It demonstrates the use of EJB over HTTP and JWT/BEARER authentication in {productNameFull}.
 
 There are two components to this example:
 
 . A server side component:
 +
-The server component is comprised of a stateful EJB and a stateless EJB. It provides both an EJB JAR that is deployed to the server and a JAR file containing the remote business interfaces required by the remote client application.
+The server component includes one stateless EJB to calculate 2 numbers.
 
 . A remote client application that accesses the server component.
 +
-The remote client application depends on the remote business interfaces from the server component. This application looks up the stateless and stateful beans via JNDI and invokes a number of methods on them.
+The remote client application calls EJB by getting JWT token first via HTTP transport.
 
 Each component is defined in its own standalone Maven module. The quickstart provides a top level Maven module to simplify the packaging of the artifacts.
 
@@ -69,24 +70,3 @@ and run the client application with
 java -jar target/ejb-remote-client-jar-with-dependencies.jar
 ----
 ====
-
-== Using EJB over HTTP
-
-You can use HTTP as the transport for remote EJB invocations by specifying `-Dhttp=true` on both the Maven and command line based execution. This should not change the output, but it will use EJB over HTTP for the invocations. This means that each EJB request maps to a single HTTP request (actually HTTP/2 by default, if it is enabled on the server).
-
-Before you can use it, you need to set up a user on the server as HTTP does not support transparent authentication. The next section describes how to xref:add_the_application_user[add the authorized application user] so you can test the quickstart using HTTP as the transport.
-
-// Additional Red Hat CodeReady Studio instructions
-This quickstart consists of multiple projects, so it deploys and runs differently in {JBDSProductName} than the other quickstarts.
-
-. Install the required Maven artifacts and deploy the server side of the quickstart project.
-
-** Right-click on the *{artifactId}-server-side* project and choose *Run As* -> *Maven Install*.
-** Right-click on the *{artifactId}-server-side* project and choose *Run As* -> *Run on Server*.
-. Build and run the client side of the quickstart project.
-
-** Right-click on the *{artifactId}-client* project and choose *Run As* -> *Java Application*.
-** In the *Select Java Application* window, choose *RemoteEJBClient - org.jboss.as.quickstarts.ejb.remote.client* and click *OK*.
-** The client output displays in the *Console* window.
-. To undeploy the project, right-click on the *{artifactId}-server-side* project and choose *Run As* -> *Maven build*. Enter `wildfly:undeploy` for the *Goals* and click *Run*.
-
