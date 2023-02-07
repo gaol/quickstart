@@ -1,6 +1,6 @@
 build:
-  uri: https://github.com/wildfly/quickstart.git
-  ref: main
+  uri: https://github.com/gaol/quickstart.git
+  ref: workshop_helm
   contextDir: helloworld
 deploy:
   replicas: 1
