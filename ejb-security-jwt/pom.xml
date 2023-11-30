@@ -156,7 +156,6 @@
      you can add these modules here to keep things modular.
      -->
     <modules>
-        <module>json-role-decoder</module>
         <module>client</module>
         <module>app-one</module>
         <module>app-two</module>

@@ -38,7 +38,7 @@ batch
 /subsystem=elytron/token-realm=jwt-realm:remove
 
 # Remove the role-decoder module
-/subsystem=elytron/custom-role-decoder=crd:remove
+/subsystem=elytron/simple-role-decoder=roles-attribute:remove
 
 module remove --name=org.wildfly.security.elytron.roledecoders
 

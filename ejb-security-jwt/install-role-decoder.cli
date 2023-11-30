@@ -1,7 +1,0 @@
-# Adds role decoder module into server
-module add --name=org.wildfly.security.elytron.roledecoders --absolute-resources=json-role-decoder/target/ejb-security-jwt-json-role-decoder.jar --dependencies=org.wildfly.security.elytron-base,jakarta.json.api
-
-# Create a custom-role-decoder to decode the rols from jwt claim.
-/subsystem=elytron/custom-role-decoder=crd:add(module=org.wildfly.security.elytron.roledecoders, class-name=org.wildfly.security.elytron.roledecoders.JsonRoleDecoder,configuration={json-path=>"/realm_access/roles"})
-
-
