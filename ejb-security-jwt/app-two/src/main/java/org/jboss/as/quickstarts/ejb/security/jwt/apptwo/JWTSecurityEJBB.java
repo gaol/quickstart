@@ -24,6 +24,8 @@ import jakarta.ejb.Stateless;
 import org.jboss.ejb3.annotation.SecurityDomain;
 
 /**
+ * Implementation of {@link JWTSecurityEJBRemoteB}.
+ *
  * @author <a href="mailto:aoingl@gmail.com">Lin Gao</a>
  */
 @Stateless
@@ -38,12 +40,21 @@ public class JWTSecurityEJBB implements JWTSecurityEJBRemoteB {
     @Override
     public String securityInfo() {
         StringBuilder sb = new StringBuilder("Security Info in JWTSecurityEJBB: \n\tCaller: [");
-        String caller = context.getCallerPrincipal() != null ? context.getCallerPrincipal().getName() : null;
+        String caller = principal();
         sb.append(caller).append("]\n");
-        sb.append("\t\t").append(caller).append(" has user role: (").append(context.isCallerInRole("user")).append(")\n");
-        sb.append("\t\t").append(caller).append(" has admin role: (").append(context.isCallerInRole("admin")).append(")\n");
+        sb.append("\t\t").append(caller).append(" has user role: (").append(inRole("user")).append(")\n");
+        sb.append("\t\t").append(caller).append(" has admin role: (").append(inRole("admin")).append(")\n");
         System.out.println("\nSecurity Info(B): \n" + sb + "\n");
         return sb.toString();
     }
 
+    @Override
+    public String principal() {
+        return context.getCallerPrincipal() != null ? context.getCallerPrincipal().getName() : null;
+    }
+
+    @Override
+    public boolean inRole(String role) {
+        return context.isCallerInRole(role);
+    }
 }

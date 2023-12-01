@@ -40,8 +40,6 @@ batch
 # Remove the role-decoder module
 /subsystem=elytron/simple-role-decoder=roles-attribute:remove
 
-module remove --name=org.wildfly.security.elytron.roledecoders
-
 # Run the batch commands
 run-batch
 

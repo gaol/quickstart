@@ -17,6 +17,8 @@
 package org.jboss.as.quickstarts.ejb.security.jwt.apptwo;
 
 /**
+ * An EJB to returns current caller identity information and if it has a specific role.
+ *
  * @author <a href="mailto:aoingl@gmail.com">Lin Gao</a>
  */
 public interface JWTSecurityEJBRemoteB {
@@ -28,4 +30,14 @@ public interface JWTSecurityEJBRemoteB {
      */
     String securityInfo();
 
+    /**
+     * @return the current caller principal.
+     */
+    String principal();
+
+    /**
+     * @param role the role to check
+     * @return true if current identity has the role specified in the <code>role</code> parameter, false otherwise.
+     */
+    boolean inRole(String role);
 }

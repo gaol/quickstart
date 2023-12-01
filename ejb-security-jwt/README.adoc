@@ -35,9 +35,6 @@ a|An `EJB` application that shows current caller principal and if it has role of
 
 [[ejbb]] We can call the EJB in `app-two` as `EJBB` in this document, it will be deployed into {productName}_2 server.
 
-a|`json-role-decoder`
-|An Elytron's https://wildfly-security.github.io/wildfly-elytron/documentation/api/current/org/wildfly/security/authz/RoleDecoder.html[RoleDecoder] implementation which extracts roles from a Json format information, like a JWT claim by specifying the https://www.rfc-editor.org/rfc/rfc6901[JsonPointer].
-
 a|`client`
 |This project builds the standalone client and executes it.
 |===
@@ -66,7 +63,7 @@ $ docker run --rm -p 8180:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWOR
 
 This predefined realm has the following configuration:
 
-A realm called `jwt-realm` is created, there is a client called `app` created under this realm, and there are 2 users created:
+A realm called `jwt-realm` is created, there is a client called `app` created under this realm, the secret for this client is `secret`, and there are 2 users created:
 
 [cols="30%,30%,40%",options="headers"]
 |===
@@ -74,8 +71,6 @@ A realm called `jwt-realm` is created, there is a client called `app` created un
 |quickstartUser |quickstartPwd1! | user
 |admin |admin | user, admin
 |===
-
-The `app` client in {oidcIdp} realm has `directAccessGrantsEnabled` to `true`, which allows regular account to log in instead of service account only.
 
 You can also set up the realm manually, please refer to {oidcIdpLink} for detail.
 
@@ -110,7 +105,7 @@ include::../shared-doc/start-the-standalone-server.adoc[leveloffset=+3]
 include::./configure_server.adoc[]
 
 ==== Deploy EJB in `app-one` to {productName}_1 Server
-The EJB `JWTSecurityEJBRemoteA` in `app-one` has only one method declared:
+The EJB `JWTSecurityEJBRemoteA` in `app-one` has one method declared:
 
 [source, java]
 ----
@@ -128,7 +123,7 @@ $ mvn wildfly:deploy
 
 ==== Configure and run EJB client application
 
-The remote EJB client application will invoke link:#ejba[EJBA] twice. The first invocation reads the authentication configuration from `META-INF/wildfly-config.xml` where the `quickstartUser` and it's password is specified to get the bearer token from a specified token endpoint url. The second invocation uses programmatic authentication switching to use `admin` user. The only difference between 2 invocations is that they are using different user.
+The remote EJB client application will invoke link:#ejba[EJBA] twice. The first invocation reads the authentication configuration from `META-INF/wildfly-config.xml` where the `quickstartUser` and it's password is specified to get the bearer token from a specified token endpoint url. The second invocation uses programmatic authentication switching to use `admin` user. The only difference between 2 invocations is that they are using different user, thus differnt roles.
 
 It has a system property called `recursive` in the client to decide if link:#ejba[EJBA] should call link:#ejbb[EJBB], we won't call EJBB in the first part, so we leave it as the default value: `false`.
 
@@ -173,7 +168,7 @@ Security Info in JWTSecurityEJBA:
 
 ----
 
-We can see that the user `quickstartUser` has the `user` role, but does not have `admin` role, the user `admin` has both roles. It can be confirmed in the {oidcIdp} server.
+We can see that the user `quickstartUser` has the `user` role, but does not have `admin` role, the user `admin` has both roles. It can be confirmed in the {oidcIdp} server setup.
 
 
 Now let's jump to the second part.
@@ -230,7 +225,7 @@ $ cd ../ear
 $ mvn wildfly:deploy
 ----
 
-There is one more file `META-INF/jbos-ejb-client.xml` in the `EAR` deployment, which specifies the outbound-connection reference to `ejb-outbound-connection`, it matches what was defined above, and it points to the HTTP port: `8280` which is used by the {productName}_2 server.
+There is a file `META-INF/jbos-ejb-client.xml` in the `EAR` deployment, which specifies the outbound-connection reference to `ejb-outbound-connection`, it matches what was defined above, and it points to the HTTP port: `8280` which is used by the {productName}_2 server.
 
 ==== Starts {productName}_2 server
 
@@ -247,7 +242,7 @@ $ __{jbossHomeName}__/bin/standalone.sh -Djboss.socket.binding.port-offset=200
 include::./configure_server.adoc[]
 
 ==== Deploy EJB in `app-two` to {productName}_2 Server
-The EJB `JWTSecurityEJBRemoteB` in `app-two` has only one method declared:
+The EJB `JWTSecurityEJBRemoteB` in `app-two` has one method declared:
 
 [source, java]
 ----
@@ -313,7 +308,7 @@ Security Info in JWTSecurityEJBB:
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 ----
 
-We can see that the user `quickstartUser` has the `user` role, but does not have `admin` role, the user `admin` has both roles. It can be confirmed in the {oidcIdp} server.
+We can see that the user `quickstartUser` has the `user` role, but does not have `admin` role, the user `admin` has both roles. It can be confirmed in the {oidcIdp} server setup.
 
 We can also see that the invocation from EJBA to EJBB uses the same authentication context as what is used in remote client calls EJBA.
 
@@ -347,6 +342,3 @@ $ __${serverNameBase}_1__/bin/jboss-cli.sh -c  --file=restore-configuration.cli
 $ __${serverNameBase}_2__/bin/jboss-cli.sh -c  {hostController} --file=restore-configuration.cli
 ----
 
-
-//  Debug the Application
-include::../shared-doc/debug-the-application.adoc[leveloffset=+1]

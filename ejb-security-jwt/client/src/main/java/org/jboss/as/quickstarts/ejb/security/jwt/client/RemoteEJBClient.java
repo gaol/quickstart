@@ -30,7 +30,7 @@ import java.net.URL;
 import java.util.Hashtable;
 
 /**
- *
+ * A Java client used to invoke remote EJB.
  */
 public class RemoteEJBClient {
 
@@ -41,8 +41,10 @@ public class RemoteEJBClient {
     private static final String ADMIN_PASS = "admin";
 
     public static void main(String[] args) throws Exception {
+        // recursive is used to indicate if JWTSecurityEJBRemoteA should call JWTSecurityEJBRemoteB
+        // it can only be set to true if JWTSecurityEJBRemoteA is deployed as an ear deployment.
         boolean recursive = Boolean.getBoolean("recursive");
-        invokeAppOneOnly(recursive);
+        invokeAppOne(recursive);
 
         System.out.println("\n\n* * * * * * *  Below are invoked using admin account  * * * * * *\n");
 
@@ -56,19 +58,26 @@ public class RemoteEJBClient {
                         .build());
         final AuthenticationContext authCtx = AuthenticationContext.empty().with(MatchRule.ALL, superUser);
         AuthenticationContext.getContextManager().setThreadDefault(authCtx);
-        invokeAppOneOnly(recursive);
+        invokeAppOne(recursive);
     }
 
-    private static void invokeAppOneOnly(boolean recursive) throws NamingException {
-        InitialContext context = jndiContext();
-        final String jndiName = recursive ?
-                "ejb:ejb-security-jwt-app-one/ejb/JWTSecurityEJBA!" + JWTSecurityEJBRemoteA.class.getName()
-                : "ejb:/ejb-security-jwt-app-one-ejb/JWTSecurityEJBA!" + JWTSecurityEJBRemoteA.class.getName();
-        JWTSecurityEJBRemoteA ejbRemoteA = (JWTSecurityEJBRemoteA)context.lookup(jndiName);
-        System.out.println("\n\n* * * * * * * * * * * recursive: " + recursive + "  * * * * * * * * * * * * * * * * * * *\n");
+    private static void invokeAppOne(boolean recursive) throws NamingException {
+        JWTSecurityEJBRemoteA ejbRemoteA = lookupEJBRemoteA(recursive);
+        System.out.println("\n* * * * * * * * * * * recursive: " + recursive + "  * * * * * * * * * * * * * * * * * * *\n");
         System.out.println(ejbRemoteA.securityInfo(recursive));
-        System.out.println("\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n\n");
-        context.close();
+        System.out.println("\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
+    }
+
+    public static JWTSecurityEJBRemoteA lookupEJBRemoteA(boolean ear) throws NamingException {
+        InitialContext context = jndiContext();
+        try {
+            final String jndiName = ear ?
+                    "ejb:ejb-security-jwt-app-one/ejb/JWTSecurityEJBA!" + JWTSecurityEJBRemoteA.class.getName()
+                    : "ejb:/ejb-security-jwt-app-one-ejb/JWTSecurityEJBA!" + JWTSecurityEJBRemoteA.class.getName();
+            return (JWTSecurityEJBRemoteA)context.lookup(jndiName);
+        } finally {
+            context.close();
+        }
     }
 
     private static InitialContext jndiContext() throws NamingException {

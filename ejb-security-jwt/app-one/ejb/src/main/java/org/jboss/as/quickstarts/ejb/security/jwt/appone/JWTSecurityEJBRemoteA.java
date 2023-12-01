@@ -17,13 +17,40 @@
 package org.jboss.as.quickstarts.ejb.security.jwt.appone;
 
 /**
+ * An EJB to returns current caller identity information and if it has a specific role.
+ *
  * @author <a href="mailto:aoingl@gmail.com">Lin Gao</a>
  */
 public interface JWTSecurityEJBRemoteA {
 
     /**
+     * @param recursive true if it invokes {@link org.jboss.as.quickstarts.ejb.security.jwt.apptwo.JWTSecurityEJBRemoteB}
+     *                  deployed in another server, false won't.
      * @return the security information in the current security context
      */
     String securityInfo(boolean recursive);
+
+    /**
+     * @return the current caller principal.
+     */
+    String principal();
+
+    /**
+     * @param role the role to check
+     * @return true if current identity has the role specified in the <code>role</code> parameter, false otherwise.
+     */
+    boolean inRole(String role);
+
+    /**
+     * @return the current caller principal from {@link org.jboss.as.quickstarts.ejb.security.jwt.apptwo.JWTSecurityEJBRemoteB}
+     */
+    String principalFromB();
+
+    /**
+     * @param role the role to check
+     * @return true if current identity has the role specified in the <code>role</code> parameter from
+     *        {@link org.jboss.as.quickstarts.ejb.security.jwt.apptwo.JWTSecurityEJBRemoteB}, false otherwise.
+     */
+    boolean inRoleFromB(String role);
 
 }

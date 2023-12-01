@@ -32,6 +32,7 @@ import java.lang.reflect.Method;
 import java.util.Hashtable;
 
 /**
+ * Implementation of {@link JWTSecurityEJBRemoteA}
  * @author <a href="mailto:aoingl@gmail.com">Lin Gao</a>
  */
 @Stateless
@@ -68,10 +69,10 @@ public class JWTSecurityEJBA implements JWTSecurityEJBRemoteA {
     @Override
     public String securityInfo(boolean recursive) {
         StringBuilder sb = new StringBuilder("Security Info in JWTSecurityEJBA: \n\tCaller: [");
-        String caller = context.getCallerPrincipal() != null ? context.getCallerPrincipal().getName() : null;
+        String caller = principal();
         sb.append(caller).append("]\n");
-        sb.append("\t\t").append(caller).append(" has user role: (").append(context.isCallerInRole("user")).append(")\n");
-        sb.append("\t\t").append(caller).append(" has admin role: (").append(context.isCallerInRole("admin")).append(")\n");
+        sb.append("\t\t").append(caller).append(" has user role: (").append(inRole("user")).append(")\n");
+        sb.append("\t\t").append(caller).append(" has admin role: (").append(inRole("admin")).append(")\n");
         System.out.println("\nSecurity Info(A): \n" + sb + "\n");
         if (recursive) {
             sb.append("\n===========  Below are invocation from remote EJB in app-two  ===========\n");
@@ -82,9 +83,7 @@ public class JWTSecurityEJBA implements JWTSecurityEJBRemoteA {
 
     private String securityInfoFromB() {
         try {
-            String lookup = "ejb:/ejb-security-jwt-app-two/JWTSecurityEJBB!org.jboss.as.quickstarts.ejb.security.jwt.apptwo.JWTSecurityEJBRemoteB";
-            // using reflection just for demonstration making it showing 2 steps easier
-            Object remote = ctx.lookup(lookup);
+            Object remote = lookupEJBB();
             Method securityInfoMethod = remote.getClass().getDeclaredMethod("securityInfo");
             return securityInfoMethod.invoke(remote).toString();
         } catch (Exception e) {
@@ -92,4 +91,40 @@ public class JWTSecurityEJBA implements JWTSecurityEJBRemoteA {
         }
     }
 
+    private Object lookupEJBB() throws NamingException {
+        String lookup = "ejb:/ejb-security-jwt-app-two/JWTSecurityEJBB!org.jboss.as.quickstarts.ejb.security.jwt.apptwo.JWTSecurityEJBRemoteB";
+        return ctx.lookup(lookup);
+    }
+
+    @Override
+    public String principal() {
+        return context.getCallerPrincipal() != null ? context.getCallerPrincipal().getName() : null;
+    }
+
+    @Override
+    public boolean inRole(String role) {
+        return context.isCallerInRole(role);
+    }
+
+    @Override
+    public String principalFromB() {
+        try {
+            Object remote = lookupEJBB();
+            Method securityInfoMethod = remote.getClass().getDeclaredMethod("principal");
+            return securityInfoMethod.invoke(remote).toString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public boolean inRoleFromB(String role) {
+        try {
+            Object remote = lookupEJBB();
+            Method securityInfoMethod = remote.getClass().getDeclaredMethod("inRole", String.class);
+            return (Boolean)securityInfoMethod.invoke(remote, role);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
